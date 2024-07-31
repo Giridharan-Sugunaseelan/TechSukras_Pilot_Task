@@ -5,10 +5,7 @@ import com.techsukras.mcqapplication.service.SubjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -23,6 +20,12 @@ public class SubjectController {
         SubjectDto subjectDto = this.subjectService.addSubject(dto);
         System.out.println(subjectDto);
         return new ResponseEntity<>(subjectDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<SubjectDto> addSubjectToStandard(@RequestParam("subId") Long subjectId, @RequestParam("stdId") Long standardId){
+        SubjectDto subjectDto = this.subjectService.addSubjectToStandard(subjectId, standardId);
+        return new ResponseEntity<>(subjectDto, HttpStatus.OK);
     }
 
 }
