@@ -17,6 +17,8 @@ public class MCQDto {
 
     private String question;
 
+    private String hint;
+
     private Set<OptionDto> options;
 
     private TopicDto topic;

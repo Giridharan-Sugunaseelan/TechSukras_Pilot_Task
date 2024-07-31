@@ -1,13 +1,16 @@
 package com.techsukras.mcqapplication.service;
 
 
+import com.techsukras.mcqapplication.dto.MCQDto;
 import com.techsukras.mcqapplication.dto.TopicDto;
+import com.techsukras.mcqapplication.entities.MCQ;
 import com.techsukras.mcqapplication.entities.Standard;
 import com.techsukras.mcqapplication.entities.Subject;
 import com.techsukras.mcqapplication.entities.Topic;
 import com.techsukras.mcqapplication.exceptions.StandardNotFoundException;
 import com.techsukras.mcqapplication.exceptions.SubjectNotFoundException;
 import com.techsukras.mcqapplication.exceptions.TopicNotFoundException;
+import com.techsukras.mcqapplication.repositories.McqRepository;
 import com.techsukras.mcqapplication.repositories.StandardRepository;
 import com.techsukras.mcqapplication.repositories.SubjectRepository;
 import com.techsukras.mcqapplication.repositories.TopicRepository;
@@ -16,6 +19,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +31,10 @@ public class TopicService {
     private SubjectRepository subjectRepository;
 
     private StandardRepository standardRepository;
+
+    private McqService mcqService;
+
+    private McqRepository mcqRepository;
 
     private ModelMapper modelMapper;
 
@@ -44,14 +53,22 @@ public class TopicService {
         topic.setTopicTitle(dto.getTopicTitle());
         topic.setSubject(subject);
         topic.setStandard(standard);
-        // add method to add questions to topic
         Topic saved = this.topicRepository.save(topic);
+
+        Long topicId = saved.getTopicId();
+        Set<MCQDto> mcqDtos = dto.getQuestions().stream().map((question) -> this.mcqService.addMcqToTopic(question, topicId)).collect(Collectors.toSet());
+        Set<MCQ> questions = this.mcqRepository.findAllByTopicId(saved.getTopicId());
+
+        saved.setQuestions(questions);
+        saved = this.topicRepository.save(saved);
+
         TopicDto topicDto = this.modelMapper.map(saved, TopicDto.class);
         topicDto.setSubjectId(saved.getSubject().getSubId());
         topicDto.setStandardId(saved.getStandard().getStdId());
-        //add method to add questionDtos
+        topicDto.setQuestions(mcqDtos);
         return topicDto;
     }
+
 
     public TopicDto getTopicById(Long id){
         Topic topic = this.topicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException("Topic with the given Id not found!!!"));

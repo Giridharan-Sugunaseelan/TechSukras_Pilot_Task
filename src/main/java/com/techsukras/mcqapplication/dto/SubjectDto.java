@@ -17,12 +17,6 @@ public class SubjectDto {
 
     private String subjectName;
 
-    @Override
-    public String toString() {
-        return "SubjectDto{" +
-                "subId=" + subId +
-                ", subjectName='" + subjectName + '\'' +
-                '}';
-    }
+
 
 }

@@ -12,4 +12,6 @@ public interface OptionRepository extends JpaRepository<Option, Long> {
 
     Optional<Option> findByOptionIdAndMcqId(Long optionId, Long McqId);
 
+
+
 }

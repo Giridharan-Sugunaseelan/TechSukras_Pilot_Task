@@ -2,6 +2,7 @@ package com.techsukras.mcqapplication.service;
 
 import com.techsukras.mcqapplication.dto.SubjectDto;
 import com.techsukras.mcqapplication.entities.Subject;
+import com.techsukras.mcqapplication.repositories.StandardRepository;
 import com.techsukras.mcqapplication.repositories.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,8 @@ import java.util.List;
 public class SubjectService {
 
     public SubjectRepository subjectRepository;
+
+    public StandardRepository standardRepository;
 
     public ModelMapper modelMapper;
 
@@ -29,6 +32,8 @@ public class SubjectService {
         List<Subject> subjects = this.subjectRepository.findAllByStandardId(standardId);
         return subjects.stream().map((subject) -> this.modelMapper.map(subject, SubjectDto.class)).toList();
     }
+
+
 
 
 
