@@ -57,7 +57,7 @@ public class TopicService {
 
         Long topicId = saved.getTopicId();
         Set<MCQDto> mcqDtos = dto.getQuestions().stream().map((question) -> this.mcqService.addMcqToTopic(question, topicId)).collect(Collectors.toSet());
-        Set<MCQ> questions = this.mcqRepository.findAllByTopicId(saved.getTopicId());
+        Set<MCQ> questions = this.mcqRepository.findAllByTopic_TopicId(saved.getTopicId());
 
         saved.setQuestions(questions);
         saved = this.topicRepository.save(saved);
@@ -76,7 +76,7 @@ public class TopicService {
     }
 
     public List<TopicDto> getTopicsBySubjectIdAndStandardId(Long subjectId, Long standardId){
-        List<Topic> topics = this.topicRepository.findAllBySubjectIdAndStandardId(subjectId, standardId);
+        List<Topic> topics = this.topicRepository.findAllBySubject_SubIdAndStandard_StdId(subjectId, standardId);
         return topics.stream().map((topic) -> this.modelMapper.map(topic, TopicDto.class)).toList();
     }
 
@@ -96,7 +96,7 @@ public class TopicService {
     }
 
     public TopicDto updateTopicBySubjectIdAndStandardId(Long subjectId, Long standardId, TopicDto dto){
-        List<Topic> topics = this.topicRepository.findAllBySubjectIdAndStandardId(subjectId, standardId);
+        List<Topic> topics = this.topicRepository.findAllBySubject_SubIdAndStandard_StdId(subjectId, standardId);
         Topic currentTopic = topics.stream().filter((topic) -> topic.getTopicId().equals(dto.getTopicId())).findFirst()
                             .orElseThrow(() -> new TopicNotFoundException("Topic with the given topic id not found!!!"));
         Topic mapped = this.modelMapper.map(dto, Topic.class);

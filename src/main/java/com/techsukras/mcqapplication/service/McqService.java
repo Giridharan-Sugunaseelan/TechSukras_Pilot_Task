@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,7 +61,7 @@ public class McqService {
     }
 
     public Set<MCQDto> getAllMcqByTopicId(Long id){
-        Set<MCQ> questions = this.mcqRepository.findAllByTopicId(id);
+        Set<MCQ> questions = this.mcqRepository.findAllByTopic_TopicId(id);
         return questions.stream().map((question) -> this.modelMapper.map(questions, MCQDto.class)).collect(Collectors.toSet());
     }
 
@@ -81,7 +80,7 @@ public class McqService {
     }
 
     public MCQDto updateMcqByMcqIdAndTopicId(Long mcqId, Long topicId, MCQDto mcqDto){
-        MCQ mcq = this.mcqRepository.findByMcqIdAndTopicId(mcqId, topicId).orElseThrow(() -> new McqNotFoundException("MCQ with the given mcqId and topicId not found!!!"));
+        MCQ mcq = this.mcqRepository.findByMcqIdAndTopic_TopicId(mcqId, topicId).orElseThrow(() -> new McqNotFoundException("MCQ with the given mcqId and topicId not found!!!"));
         MCQ mapped = this.modelMapper.map(mcqDto, MCQ.class);
         return updateMcq(mcq, mapped);
     }

@@ -53,7 +53,7 @@ public class OptionService {
     }
 
     public List<OptionDto> getOptionsByMcqId(Long id){
-        List<Option> options = this.optionRepository.findByMcqId(id);
+        List<Option> options = this.optionRepository.findByMcq_McqId(id);
         return options.stream().map((option) -> this.modelMapper.map(option, OptionDto.class)).toList();
     }
 
@@ -72,7 +72,7 @@ public class OptionService {
     }
 
     public OptionDto updateOptionByOptionIdAndMcqId(Long optionId, Long mcqId, OptionDto dto){
-        Option option = this.optionRepository.findByOptionIdAndMcqId(optionId, mcqId).orElseThrow(() -> new OptionNotFoundException("Option with the given OptionId and McqId not found!"));
+        Option option = this.optionRepository.findByOptionIdAndMcq_McqId(optionId, mcqId).orElseThrow(() -> new OptionNotFoundException("Option with the given OptionId and McqId not found!"));
         Option mapped = this.modelMapper.map(dto, Option.class);
         return updateOption(option, mapped);
     }

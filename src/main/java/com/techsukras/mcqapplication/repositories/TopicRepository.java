@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
-    List<Topic> findAllBySubjectIdAndStandardId(Long subjectId, Long StandardId);
+    List<Topic> findAllBySubject_SubIdAndStandard_StdId(Long subjectId, Long standardId);
 
 }

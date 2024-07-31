@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface OptionRepository extends JpaRepository<Option, Long> {
 
-    List<Option> findByMcqId(Long id);
+    List<Option> findByMcq_McqId(Long mcqId);
 
-    Optional<Option> findByOptionIdAndMcqId(Long optionId, Long McqId);
+    Optional<Option> findByOptionIdAndMcq_McqId(Long optionId, Long McqId);
 
 
 
