@@ -8,13 +8,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Options {
+@Table(name = "Options")
+public class Option
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long optionId;
 
+    @Column(nullable = false)
     private String optionContent;
 
+    @Column(nullable = false)
     private Boolean isCorrect;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, targetEntity = MCQ.class)

@@ -15,12 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "Class")
 public class Standard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stdId;
 
+    @Column(nullable = false)
     private String stdName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Subject.class)
