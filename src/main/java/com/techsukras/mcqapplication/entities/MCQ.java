@@ -24,6 +24,8 @@ public class MCQ {
     @Column(nullable = false)
     private String question;
 
+    private String hint;
+
     @OneToMany(mappedBy = "mcq", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Option.class)
     private Set<Option> options = new HashSet<>();
 

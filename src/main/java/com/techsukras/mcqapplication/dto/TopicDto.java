@@ -17,4 +17,8 @@ public class TopicDto {
 
     private Set<MCQDto> questions;
 
+    private Long standardId;
+
+    private Long subjectId;
+
 }
