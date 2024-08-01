@@ -21,6 +21,6 @@ public class MCQDto {
 
     private Set<OptionDto> options;
 
-    private TopicDto topic;
+    private Long topicId;
 
 }

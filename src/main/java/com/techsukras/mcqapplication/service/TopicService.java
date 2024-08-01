@@ -39,8 +39,14 @@ public class TopicService {
     private ModelMapper modelMapper;
 
     public TopicDto addTopic(TopicDto dto){
-        Topic mapped = this.modelMapper.map(dto, Topic.class);
-        Topic saved = this.topicRepository.save(mapped);
+        Topic topic = this.modelMapper.map(dto, Topic.class);
+        Subject subject = this.subjectRepository.findById(dto.getSubjectId()).
+                orElseThrow(() -> new TopicNotFoundException("Topic not found!!!"));
+        Standard standard = this.standardRepository.findById(dto.getStandardId())
+                .orElseThrow(() -> new StandardNotFoundException("Standard not found!!!"));
+        topic.setStandard(standard);
+        topic.setSubject(subject);
+        Topic saved = this.topicRepository.save(topic);
         return this.modelMapper.map(saved, TopicDto.class);
     }
 

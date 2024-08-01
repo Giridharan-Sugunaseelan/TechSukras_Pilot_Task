@@ -33,11 +33,10 @@ public class OptionService {
         return this.modelMapper.map(saved, OptionDto.class);
     }
 
-    public Set<Option> addOptionsToMcq(MCQDto dto, Long mcqId){
-        MCQ mcq = this.mcqRepository.findById(mcqId).orElseThrow(() -> new McqNotFoundException("MCQ not found!!!"));
-        Set<OptionDto> optionsDtos= dto.getOptions();
+    public Set<Option> addOptionsToMcq(Set<OptionDto> dtos, Long mcqId){
+        MCQ mcq = this.mcqRepository.findById(mcqId).orElseThrow(() -> new McqNotFoundException("MCQ not found!!!"));;
 
-        Set<Option> options = optionsDtos.stream()
+        Set<Option> options = dtos.stream()
                 .map((optionDto) -> this.modelMapper.map(optionDto, Option.class))
                 .collect(Collectors.toSet());
 

@@ -29,11 +29,15 @@ public class McqService {
 
     private ModelMapper modelMapper;
 
-    public MCQDto addMcq(MCQDto dto){
-        MCQ mapped = this.modelMapper.map(dto, MCQ.class);
-        MCQ saved = this.mcqRepository.save(mapped);
-        return this.modelMapper.map(saved, MCQDto.class);
-    }
+//    public MCQDto addMcq(MCQDto dto){
+//        MCQ mapped = this.modelMapper.map(dto, MCQ.class);
+//        MCQ saved = this.mcqRepository.save(mapped);
+//        Set<Option> options = this.optionService.addOptionsToMcq(dto.getOptions(), saved.getMcqId());
+//        saved.setOptions(options);
+//        MCQDto mcqDto = this.modelMapper.map(saved, MCQDto.class);
+//        mcqDto.setTopicId(dto.getTopicId());
+//        return mcqDto;
+//    }
 
     public MCQDto addMcqToTopic(MCQDto dto, Long topicId){
         Topic topic = this.topicRepository.findById(topicId)
@@ -42,15 +46,14 @@ public class McqService {
         newMcq.setTopic(topic);
         MCQ saved = this.mcqRepository.save(newMcq);
 
-        Set<Option> options = this.optionService.addOptionsToMcq(dto, saved.getMcqId());
+        Set<Option> options = this.optionService.addOptionsToMcq(dto.getOptions(), saved.getMcqId());
         saved.setOptions(options);
         saved = this.mcqRepository.save(saved);
 
         MCQDto mapped = this.modelMapper.map(saved, MCQDto.class);
         Set<OptionDto> optionDtos = options.stream()
                 .map((option) -> this.modelMapper.map(option, OptionDto.class)).collect(Collectors.toSet());
-        TopicDto topicDto = this.modelMapper.map(topic, TopicDto.class);
-        mapped.setTopic(topicDto);
+        mapped.setTopicId(dto.getTopicId());
         mapped.setOptions(optionDtos);
         return mapped;
     }
