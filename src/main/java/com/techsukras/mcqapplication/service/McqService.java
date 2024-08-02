@@ -80,9 +80,10 @@ public class McqService {
         return this.modelMapper.map(mcq, MCQDto.class);
     }
 
-    public Set<MCQDto> getAllMcqByTopicId(Long id){
+    public Set<MCQ> getAllMcqByTopicId(Long id){
         Set<MCQ> questions = this.mcqRepository.findAllByTopic_TopicId(id);
-        return questions.stream().map((question) -> this.modelMapper.map(questions, MCQDto.class)).collect(Collectors.toSet());
+//        return questions.stream().map((question) -> this.modelMapper.map(questions, MCQDto.class)).collect(Collectors.toSet());
+        return questions;
     }
 
     public MCQDto updateMcq(MCQ mcq, MCQ mapped){
