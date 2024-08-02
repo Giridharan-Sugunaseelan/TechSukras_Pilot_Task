@@ -22,10 +22,16 @@ public class TopicController {
         return new ResponseEntity<>(topicDto, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<List<TopicDto>> getTopics(@RequestParam("subId") Long subjectId, @RequestParam("stdId") Long standardId){
-        List<TopicDto> topics = this.topicService.getTopicsBySubjectIdAndStandardId(subjectId, standardId);
+    @GetMapping("/whole/{subId}")
+    public ResponseEntity<List<TopicDto>> getTopics(@PathVariable("subId") Long subjectId){
+        List<TopicDto> topics = this.topicService.getTopicsBySubjectIdAndStandardId(subjectId);
         return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/{subId}")
+    public ResponseEntity<List<String>> getTopicTitles(@PathVariable("subId") Long subjectId){
+        List<String> topicTitles = this.topicService.getTopicTitles(subjectId);
+        return new ResponseEntity<>(topicTitles, HttpStatus.OK);
     }
 
 }

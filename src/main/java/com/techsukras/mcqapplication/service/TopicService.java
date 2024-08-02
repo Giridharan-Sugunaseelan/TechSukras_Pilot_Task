@@ -8,14 +8,13 @@ import com.techsukras.mcqapplication.entities.Standard;
 import com.techsukras.mcqapplication.entities.Subject;
 import com.techsukras.mcqapplication.entities.Topic;
 import com.techsukras.mcqapplication.exceptions.StandardNotFoundException;
+import com.techsukras.mcqapplication.exceptions.StudentNotFoundException;
 import com.techsukras.mcqapplication.exceptions.SubjectNotFoundException;
 import com.techsukras.mcqapplication.exceptions.TopicNotFoundException;
-import com.techsukras.mcqapplication.repositories.McqRepository;
-import com.techsukras.mcqapplication.repositories.StandardRepository;
-import com.techsukras.mcqapplication.repositories.SubjectRepository;
-import com.techsukras.mcqapplication.repositories.TopicRepository;
+import com.techsukras.mcqapplication.repositories.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +30,8 @@ public class TopicService {
     private SubjectRepository subjectRepository;
 
     private StandardRepository standardRepository;
+
+    private StudentRepository studentRepository;
 
     private McqService mcqService;
 
@@ -48,6 +49,13 @@ public class TopicService {
         topic.setSubject(subject);
         Topic saved = this.topicRepository.save(topic);
         return this.modelMapper.map(saved, TopicDto.class);
+    }
+
+    public List<String> getTopicTitles(Long subId){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long stdId = this.studentRepository.findByEmail(email).orElseThrow(() -> new StudentNotFoundException("Student not found exception")).getStandard().getStdId();
+        List<Topic> topics = this.topicRepository.findAllBySubject_SubIdAndStandard_StdId(subId, stdId);
+        return topics.stream().map(Topic::getTopicTitle).toList();
     }
 
     public TopicDto addTopicToSubject(TopicDto dto){
@@ -81,8 +89,11 @@ public class TopicService {
         return this.modelMapper.map(topic, TopicDto.class);
     }
 
-    public List<TopicDto> getTopicsBySubjectIdAndStandardId(Long subjectId, Long standardId){
-        List<Topic> topics = this.topicRepository.findAllBySubject_SubIdAndStandard_StdId(subjectId, standardId);
+    public List<TopicDto> getTopicsBySubjectIdAndStandardId(Long subjectId){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long stdId = this.studentRepository.findByEmail(email).orElseThrow(() -> new StudentNotFoundException("Student not found exception")).getStandard().getStdId();
+        List<Topic> topics = this.topicRepository.findAllBySubject_SubIdAndStandard_StdId(subjectId, stdId);
+
         return topics.stream().map((topic) -> this.modelMapper.map(topic, TopicDto.class)).toList();
     }
 
