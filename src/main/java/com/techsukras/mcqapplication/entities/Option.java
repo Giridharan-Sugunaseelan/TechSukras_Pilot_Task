@@ -22,7 +22,7 @@ public class Option
     private Boolean isCorrect;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, targetEntity = MCQ.class)
-    @JoinColumn(name = "mcqId", referencedColumnName = "mcqId",nullable = false)
+    @JoinColumn(name = "mcqId", referencedColumnName = "mcqId")
     private MCQ mcq;
 
 }

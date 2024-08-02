@@ -9,6 +9,7 @@ import com.techsukras.mcqapplication.entities.Topic;
 import com.techsukras.mcqapplication.exceptions.McqNotFoundException;
 import com.techsukras.mcqapplication.exceptions.TopicNotFoundException;
 import com.techsukras.mcqapplication.repositories.McqRepository;
+import com.techsukras.mcqapplication.repositories.OptionRepository;
 import com.techsukras.mcqapplication.repositories.TopicRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,7 +28,10 @@ public class McqService {
 
     private OptionService optionService;
 
+    private OptionRepository optionRepository;
+
     private ModelMapper modelMapper;
+
 
 //    public MCQDto addMcq(MCQDto dto){
 //        MCQ mapped = this.modelMapper.map(dto, MCQ.class);
@@ -39,23 +43,36 @@ public class McqService {
 //        return mcqDto;
 //    }
 
+
     public MCQDto addMcqToTopic(MCQDto dto, Long topicId){
+
         Topic topic = this.topicRepository.findById(topicId)
                 .orElseThrow(() -> new TopicNotFoundException("Topic with the given id not found"));
+
+        Set<Option> options = dto.getOptions().stream().map((optionDto) -> this.optionService.addOption(optionDto)).collect(Collectors.toSet());
+
         MCQ newMcq = this.modelMapper.map(dto, MCQ.class);
+
         newMcq.setTopic(topic);
-        MCQ saved = this.mcqRepository.save(newMcq);
 
-        Set<Option> options = this.optionService.addOptionsToMcq(dto.getOptions(), saved.getMcqId());
-        saved.setOptions(options);
-        saved = this.mcqRepository.save(saved);
+        newMcq.setOptions(options);
 
-        MCQDto mapped = this.modelMapper.map(saved, MCQDto.class);
-        Set<OptionDto> optionDtos = options.stream()
-                .map((option) -> this.modelMapper.map(option, OptionDto.class)).collect(Collectors.toSet());
-        mapped.setTopicId(dto.getTopicId());
+        MCQ savedMcq = this.mcqRepository.save(newMcq);
+
+        savedMcq.getOptions().forEach((option) -> {
+            option.setMcq(savedMcq);
+            this.optionRepository.save(option);
+        });
+
+        MCQDto mapped = this.modelMapper.map(savedMcq, MCQDto.class);
+        Set<OptionDto> optionDtos = savedMcq.getOptions().stream()
+                .map(option -> this.modelMapper.map(option, OptionDto.class))
+                .collect(Collectors.toSet());
+        mapped.setTopicId(topicId);
         mapped.setOptions(optionDtos);
+
         return mapped;
+
     }
 
     public MCQDto getMcq(Long id){

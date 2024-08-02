@@ -27,10 +27,9 @@ public class OptionService {
 
     private McqRepository mcqRepository;
 
-    public OptionDto addOption(OptionDto dto){
+    public Option addOption(OptionDto dto){
         Option mapped = this.modelMapper.map(dto, Option.class);
-        Option saved = this.optionRepository.save(mapped);
-        return this.modelMapper.map(saved, OptionDto.class);
+        return this.optionRepository.save(mapped);
     }
 
     public Set<Option> addOptionsToMcq(Set<OptionDto> dtos, Long mcqId){
